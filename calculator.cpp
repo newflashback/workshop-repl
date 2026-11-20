@@ -1,4 +1,5 @@
 #include <cmath>
+#include <complex>
 #include <cstdlib>
 #include <exception>
 #include <iostream>
@@ -36,9 +37,44 @@ public:
     }
 };
 
+class ComplexAdd : public repl::BaseCommand<ComplexAdd, std::complex<float>, std::complex<float>, std::complex<float>>
+{
+public:
+    const std::string_view longName = "ca";
+    const std::string_view shortName = "cadd";
+    ComplexAdd() = default;
+    std::complex<float> operator()(const std::complex<float>& lhs, const std::complex<float>& rhs)
+    {
+        return lhs + rhs;
+    }
+};
+
+class ComplexMul : public repl::BaseCommand<ComplexAdd, std::complex<float>, std::complex<float>, std::complex<float>>
+{
+public:
+    const std::string_view longName = "cm";
+    const std::string_view shortName = "cmul";
+    ComplexMul() = default;
+    std::complex<float> operator()(const std::complex<float>& lhs, const std::complex<float>& rhs)
+    {
+        return lhs * rhs;
+    }
+};
+
+class ComplexAbs : public repl::BaseCommand<ComplexAdd, float, std::complex<float>>
+{
+public:
+    const std::string_view longName = "abs";
+    const std::string_view shortName = "cabs";
+    ComplexAbs() = default;
+    float operator()(const std::complex<float>& cmx)
+    {
+        return std::hypot(cmx.imag(), cmx.real());
+    }
+};
 // TODO: добавьте команды для работы с комплексными числами
 
-using Repl = ::repl::Repl<Multiply, SquareRoot>;
+using Repl = ::repl::Repl<Multiply, SquareRoot, ComplexAdd, ComplexMul, ComplexAbs>;
 
 } // namespace calculator
 } // namespace repl
